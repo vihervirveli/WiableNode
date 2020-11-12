@@ -256,9 +256,8 @@ router.post('/:article/comments', auth.required, function(req, res, next) {
 
     return comment.save().then(function(){
 //      req.article.comments.push(comment);
+// this method push is outdated in this version of Mongo :)
       req.article.comments = req.article.comments.concat([comment]);
-      //myArray.push(id);
-      //let myComment = myComment.concat([comment]); //this uses $set so no problems
 
       return req.article.save().then(function(article) {
         res.json({comment: comment.toJSONFor(user)});
