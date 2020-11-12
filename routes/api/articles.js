@@ -252,9 +252,13 @@ router.post('/:article/comments', auth.required, function(req, res, next) {
     var comment = new Comment(req.body.comment);
     comment.article = req.article;
     comment.author = user;
+    
 
     return comment.save().then(function(){
-      req.article.comments.push(comment);
+//      req.article.comments.push(comment);
+      req.article.comments = req.article.comments.concat([comment]);
+      //myArray.push(id);
+      //let myComment = myComment.concat([comment]); //this uses $set so no problems
 
       return req.article.save().then(function(article) {
         res.json({comment: comment.toJSONFor(user)});
