@@ -3,7 +3,7 @@ var router = require('express').Router();
 var passport = require('passport');
 var User = mongoose.model('User');
 var auth = require('../auth');
-
+var logger = require('winston')
 router.get('/user', auth.required, function(req, res, next){
   User.findById(req.payload.id).then(function(user){
     if(!user){ return res.sendStatus(401); }
@@ -14,7 +14,10 @@ router.get('/user', auth.required, function(req, res, next){
 
 router.put('/user', auth.required, function(req, res, next){
   User.findById(req.payload.id).then(function(user){
-    if(!user){ return res.sendStatus(401); }
+    if(!user){ 
+      logger.log('warn', 'user tried to log in but used faulty credentials')
+      console.log('console.log user tried to log in but used faulty credentials')
+      return res.sendStatus(401); }
 
     // only update fields that were actually passed...
     if(typeof req.body.user.username !== 'undefined'){
