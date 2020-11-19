@@ -8,6 +8,7 @@ var http = require('http'),
     passport = require('passport'),
     errorhandler = require('errorhandler'),
     mongoose = require('mongoose');
+    logger = require('./logger.js')
 
 var isProduction = process.env.NODE_ENV === 'production';
 
