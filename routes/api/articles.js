@@ -174,7 +174,7 @@ router.put('/:article', auth.required, function(req, res, next) {
 
       req.article.save().then(function(article){
 
-        logger.log('info', `${dt} ${User} updated an article ${article.toJSONFor(user)}`)
+        //logger.log('info', `${dt} ${User} updated an article ${article.toJSONFor(user)}`)
         
         return res.json({article: article.toJSONFor(user)});
       }).catch(next);
