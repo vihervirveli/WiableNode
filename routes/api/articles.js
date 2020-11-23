@@ -4,16 +4,19 @@ var Article = mongoose.model('Article');
 var Comment = mongoose.model('Comment');
 var User = mongoose.model('User');
 var auth = require('../auth');
-
+var logger = require('winston')
 // Preload article objects on routes with ':article'
 router.param('article', function(req, res, next, slug) {
   Article.findOne({ slug: slug})
     .populate('author')
     .then(function (article) {
-      if (!article) { return res.sendStatus(404); }
+      if (!article) { 
+        let dt = new Date()
+        logger.log('warn', `${dt} ${User} tried to author an article but got error`)
+        return res.sendStatus(404); }
 
       req.article = article;
-
+      logger.log('info', `${dt} ${User} authored an article ${slug}`)
       return next();
     }).catch(next);
 });
@@ -170,6 +173,9 @@ router.put('/:article', auth.required, function(req, res, next) {
       }
 
       req.article.save().then(function(article){
+
+        logger.log('info', `${dt} ${User} updated an article ${article.toJSONFor(user)}`)
+        
         return res.json({article: article.toJSONFor(user)});
       }).catch(next);
     } else {
