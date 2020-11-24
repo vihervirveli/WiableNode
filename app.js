@@ -8,7 +8,7 @@ let http = require('http'),
     passport = require('passport'),
     errorhandler = require('errorhandler'),
     mongoose = require('mongoose');
-    winston = require('./winston_config.js')
+    logger = require('./winston_config.js')
     morgan = require('morgan')
 var isProduction = process.env.NODE_ENV === 'production';
 
@@ -18,7 +18,7 @@ var app = express();
 app.use(cors());
 
 // Normal express config defaults
-app.use(morgan('combined', {"stream": winston.stream.write}));
+app.use(morgan('combined', {"stream": logger.stream.write}));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -59,7 +59,7 @@ app.use(function(req, res, next) {
 if (!isProduction) {
   app.use(function(err, req, res, next) {
     console.log(err.stack);
-    winston.error(`Kyllä tämä on meidän logiviesti ${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+    logger.error(`Kyllä tämä on meidän logiviesti ${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
     res.status(err.status || 500);
 
     res.json({'errors': {
