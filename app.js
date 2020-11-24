@@ -1,4 +1,4 @@
-var http = require('http'),
+let http = require('http'),
     path = require('path'),
     methods = require('methods'),
     express = require('express'),
@@ -8,7 +8,7 @@ var http = require('http'),
     passport = require('passport'),
     errorhandler = require('errorhandler'),
     mongoose = require('mongoose');
-    logger = require('./logger.js')
+    winston = require('./winston_config.js')
 
 var isProduction = process.env.NODE_ENV === 'production';
 
@@ -18,7 +18,7 @@ var app = express();
 app.use(cors());
 
 // Normal express config defaults
-app.use(require('morgan')('dev'));
+app.use(morgan('combined', {stream: winston.stream}));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
