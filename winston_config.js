@@ -21,7 +21,7 @@ const logger = createLogger({
   ),
   transports: [
 	new transports.Console({ level: 'info' }),
-	new transports.File({ filename: config.get("app.logging.outputfile"), level: 'debug' }),
+	new transports.File({ filename: config.get("./logs/app.log"), level: 'debug' }),
   ]
 });
 module.exports = logger
