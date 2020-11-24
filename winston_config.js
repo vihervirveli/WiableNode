@@ -12,16 +12,10 @@ const logger = winston.createLogger({
     exitOnError: false,
     transports: [
         new (require('winston-daily-rotate-file'))({
-            filename: `${logDir}/logs.log`,
+            filename: `${logDir}/app.log`,
             datePattern: 'YYYY-MM-DD-HH',
             zippedArchive: true,
-            level: 'silly'
-        }),
-        new (require('winston-daily-rotate-file'))({
-            filename: `${logDir}/errors.log`,
-            datePattern: 'YYYY-MM-DD-HH',
-            zippedArchive: true,
-            level: 'error'
+            level: 'info'
         })
     ],
 });
