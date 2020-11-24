@@ -18,7 +18,7 @@ var app = express();
 app.use(cors());
 
 // Normal express config defaults
-app.use(morgan('combined', {stream: winston.stream}));
+app.use(morgan('combined', {"stream": winston.stream.write}));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
