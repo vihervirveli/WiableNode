@@ -9,7 +9,7 @@ let http = require('http'),
     errorhandler = require('errorhandler'),
     mongoose = require('mongoose');
     winston = require('./winston_config.js')
-
+    morgan = require('morgan')
 var isProduction = process.env.NODE_ENV === 'production';
 
 // Create global app object
