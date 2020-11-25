@@ -10,7 +10,7 @@ let http = require('http'),
     mongoose = require('mongoose');
     logger = require('./winston_config.js')
     morgan = require('morgan')
-var isProduction = process.env.NODE_ENV === 'production';
+var isDevelopment = process.env.NODE_ENV === 'development';
 
 // Create global app object
 var app = express();
@@ -27,11 +27,11 @@ app.use(express.static(__dirname + '/public'));
 
 app.use(session({ secret: 'conduit', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false  }));
 
-if (!isProduction) {
+if (!isDevelopment) {
   app.use(errorhandler());
 }
 
-if(isProduction){
+if(isDevelopment){
   mongoose.connect(process.env.MONGODB_URI);
 } else {
   mongoose.connect(process.env.MONGODB_URI);
@@ -56,7 +56,7 @@ app.use(function(req, res, next) {
 
 // development error handler
 // will print stacktrace
-if (!isProduction) {
+if (!isDevelopment) {
   app.use(function(err, req, res, next) {
     console.log(err.stack);
     logger.error(`Kyllä tämä on meidän logiviesti ${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
@@ -69,7 +69,7 @@ if (!isProduction) {
   });
 }
 
-// production error handler
+// development error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
