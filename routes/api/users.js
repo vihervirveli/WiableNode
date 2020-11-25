@@ -55,12 +55,10 @@ router.post('/users/login', function(req, res, next){
 
     if(user){
       user.token = user.generateJWT();
-      let dt = new Date()
-      logger.info(`${dt} user ${user} logged in - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+      logger.info(`user logged in - ${user} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
       return res.json({user: user.toAuthJSON()});
     } else {
-      let dt = new Date()
-      logger.error(`${dt} user tried to log in but used faulty credentials ${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+      logger.error(`user tried to log in but used faulty credentials ${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
       return res.status(422).json(info);
     }
   })(req, res, next);

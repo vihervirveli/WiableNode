@@ -5,7 +5,6 @@ const { combine, splat, timestamp, printf } = format;
 
 const myFormat = printf( ({ level, message, timestamp , ...metadata}) => {
   let msg = `${timestamp} [${level}] : ${message} ` 
-  console.log("suoritetaanko myformat ikinä") 
   if(metadata) {
 	msg += JSON.stringify(metadata)
   }
