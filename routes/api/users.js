@@ -6,9 +6,7 @@ var auth = require('../auth');
 var logger = require('./../../winston_config.js')
 router.get('/user', auth.required, function(req, res, next){
   User.findById(req.payload.id).then(function(user){
-    if(!user){ 
-      let dt = new Date()
-      logger.log('warn', `${dt} user tried to log in but used faulty credentials`)
+    if(!user){       
       return res.sendStatus(401); }
 
     return res.json({user: user.toAuthJSON()});
@@ -18,8 +16,6 @@ router.get('/user', auth.required, function(req, res, next){
 router.put('/user', auth.required, function(req, res, next){
   User.findById(req.payload.id).then(function(user){
     if(!user){ 
-      let dt = new Date()
-      logger.log('warn', `${dt} user tried to log in but used faulty credentials`)
       return res.sendStatus(401); }
 
     // only update fields that were actually passed...
@@ -59,8 +55,12 @@ router.post('/users/login', function(req, res, next){
 
     if(user){
       user.token = user.generateJWT();
+      let dt = new Date()
+      logger.info(`${dt} user ${user} logged in - ${req.originalUrl} - ${req.method} - ${req.ip}`)
       return res.json({user: user.toAuthJSON()});
     } else {
+      let dt = new Date()
+      logger.error(`${dt} user tried to log in but used faulty credentials ${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
       return res.status(422).json(info);
     }
   })(req, res, next);

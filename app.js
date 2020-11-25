@@ -58,7 +58,7 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (!isDevelopment) {
   app.use(function(err, req, res, next) {
-    console.log(err.stack);
+    
     logger.error(`Kyllä tämä on meidän logiviesti ${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
     res.status(err.status || 500);
 
