@@ -59,7 +59,7 @@ app.use(function(req, res, next) {
 if (!isDevelopment) {
   app.use(function(err, req, res, next) {
     
-    logger.error(`Kyllä tämä on meidän logiviesti ${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+    logger.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
     res.status(err.status || 500);
 
     res.json({'errors': {

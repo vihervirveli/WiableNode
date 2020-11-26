@@ -4,7 +4,7 @@ var Article = mongoose.model('Article');
 var Comment = mongoose.model('Comment');
 var User = mongoose.model('User');
 var auth = require('../auth');
-
+var logger = require('./../../winston_config.js')
 // Preload article objects on routes with ':article'
 router.param('article', function(req, res, next, slug) {
   Article.findOne({ slug: slug})
@@ -131,7 +131,7 @@ router.post('/', auth.required, function(req, res, next) {
     article.author = user;
 
     return article.save().then(function(){
-      console.log(article.author);
+      logger.info(`user published an article ${user} - article ${article}`)
       return res.json({article: article.toJSONFor(user)});
     });
   }).catch(next);
@@ -171,7 +171,7 @@ router.put('/:article', auth.required, function(req, res, next) {
 
       req.article.save().then(function(article){
 
-        //logger.log('info', `${dt} ${User} updated an article ${article.toJSONFor(user)}`)
+      logger.info(`User updated an article ${user} - ${article.toJSONFor(user)}`)
         
         return res.json({article: article.toJSONFor(user)});
       }).catch(next);
@@ -188,6 +188,7 @@ router.delete('/:article', auth.required, function(req, res, next) {
 
     if(req.article.author._id.toString() === req.payload.id.toString()){
       return req.article.remove().then(function(){
+        logger.info(`User deleted an article ${user}`)
         return res.sendStatus(204);
       });
     } else {
@@ -202,7 +203,7 @@ router.post('/:article/favorite', auth.required, function(req, res, next) {
 
   User.findById(req.payload.id).then(function(user){
     if (!user) { return res.sendStatus(401); }
-
+    logger.info(`User favorited an article ${user} - ${articleId}`)
     return user.favorite(articleId).then(function(){
       return req.article.updateFavoriteCount().then(function(article){
         return res.json({article: article.toJSONFor(user)});
@@ -217,7 +218,7 @@ router.delete('/:article/favorite', auth.required, function(req, res, next) {
 
   User.findById(req.payload.id).then(function (user){
     if (!user) { return res.sendStatus(401); }
-
+    logger.info(`User un-favorited an article ${user} - ${articleId}`)
     return user.unfavorite(articleId).then(function(){
       return req.article.updateFavoriteCount().then(function(article){
         return res.json({article: article.toJSONFor(user)});
@@ -251,11 +252,11 @@ router.get('/:article/comments', auth.optional, function(req, res, next){
 router.post('/:article/comments', auth.required, function(req, res, next) {
   User.findById(req.payload.id).then(function(user){
     if(!user){ return res.sendStatus(401); }
-
+    
     var comment = new Comment(req.body.comment);
     comment.article = req.article;
     comment.author = user;
-    
+    logger.info(`User commented on an article - ${user} - ${comment} - ${articleId}`)
 
     return comment.save().then(function(){
 //      req.article.comments.push(comment);
@@ -275,6 +276,7 @@ router.delete('/:article/comments/:comment', auth.required, function(req, res, n
     req.article.save()
       .then(Comment.find({_id: req.comment._id}).remove().exec())
       .then(function(){
+        logger.info(`User deleted their comment on an article - ${user} - ${req.comment._id} - ${articleId}`)
         res.sendStatus(204);
       });
   } else {
