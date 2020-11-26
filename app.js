@@ -59,7 +59,7 @@ app.use(function(req, res, next) {
 if (!isProduction) {
   app.use(function(err, req, res, next) {
     console.log(err.stack);
-    winston.error(`Kyllä tämä on meidän logiviesti ${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+//    winston.error(`Kyllä tämä on meidän logiviesti ${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
     res.status(err.status || 500);
 
     res.json({'errors': {

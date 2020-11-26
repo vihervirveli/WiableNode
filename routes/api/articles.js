@@ -6,6 +6,7 @@ var User = mongoose.model('User');
 var auth = require('../auth');
 var logger = require('./../../winston_config.js')
 // Preload article objects on routes with ':article'
+
 router.param('article', function(req, res, next, slug) {
   Article.findOne({ slug: slug})
     .populate('author')
@@ -203,7 +204,7 @@ router.post('/:article/favorite', auth.required, function(req, res, next) {
 
   User.findById(req.payload.id).then(function(user){
     if (!user) { return res.sendStatus(401); }
-    logger.info(`User favorited an article ${user} - ${articleId}`)
+    logger.info(`User favorited an article ${user} - ${articleId.toString()}`)
     return user.favorite(articleId).then(function(){
       return req.article.updateFavoriteCount().then(function(article){
         return res.json({article: article.toJSONFor(user)});
@@ -218,7 +219,7 @@ router.delete('/:article/favorite', auth.required, function(req, res, next) {
 
   User.findById(req.payload.id).then(function (user){
     if (!user) { return res.sendStatus(401); }
-    logger.info(`User un-favorited an article ${user} - ${articleId}`)
+    logger.info(`User un-favorited an article ${user} - ${articleId.toString()}`)
     return user.unfavorite(articleId).then(function(){
       return req.article.updateFavoriteCount().then(function(article){
         return res.json({article: article.toJSONFor(user)});
@@ -250,13 +251,15 @@ router.get('/:article/comments', auth.optional, function(req, res, next){
 
 // create a new comment
 router.post('/:article/comments', auth.required, function(req, res, next) {
+  var articleId = req.article._id;
   User.findById(req.payload.id).then(function(user){
     if(!user){ return res.sendStatus(401); }
     
     var comment = new Comment(req.body.comment);
     comment.article = req.article;
     comment.author = user;
-    logger.info(`User commented on an article - ${user} - ${comment} - ${articleId}`)
+//    console.log("{INI}******","/n/n","\n\n","articleId:",articleId.toString(),"\n\n","******{FIM}")
+    logger.info(`User commented on an article - ${user} - ${comment} - ${articleId.toString()}`)
 
     return comment.save().then(function(){
 //      req.article.comments.push(comment);
@@ -271,14 +274,18 @@ router.post('/:article/comments', auth.required, function(req, res, next) {
 });
 
 router.delete('/:article/comments/:comment', auth.required, function(req, res, next) {
+  var articleId = req.article._id;
+  var commenId = req.comment._id;
   if(req.comment.author.toString() === req.payload.id.toString()){
     req.article.comments.remove(req.comment._id);
+
     req.article.save()
-      .then(Comment.find({_id: req.comment._id}).remove().exec())
-      .then(function(){
-        logger.info(`User deleted their comment on an article - ${user} - ${req.comment._id} - ${articleId}`)
-        res.sendStatus(204);
-      });
+    .then(Comment.find({_id: req.comment._id}).remove().exec())
+    logger.info(`User deleted their comment on an article - ${user} - ${commenId} - ${articleId.toString()}`)
+    .then(function(){
+      res.sendStatus(204);
+    });
+
   } else {
     res.sendStatus(403);
   }
