@@ -256,7 +256,11 @@ router.post('/:article/comments', auth.required, function(req, res, next) {
     var comment = new Comment(req.body.comment);
     comment.article = req.article;
     comment.author = user;
-    logger.info(`User commented on an article - ${user} - ${comment} - ${articleId}`)
+    console.log("LOOK HERE")
+    console.log(comment)
+    console.log(comment.article)
+    console.log(comment.author)
+    logger.info(`User commented on an article - ${user} - ${comment} - ${comment.article.id}`)
 
     return comment.save().then(function(){
 //      req.article.comments.push(comment);

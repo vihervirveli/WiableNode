@@ -4,7 +4,9 @@ const { createLogger, format, transports } = require('winston');
 const { combine, splat, timestamp, printf } = format;
 
 const myFormat = printf( ({ level, message, timestamp , ...metadata}) => {
-  let msg = `${timestamp} [${level}] : ${message} ` 
+  let ourTime = new Date().toLocaleString('fi-FI',{timeZone: 'Europe/Helsinki'})
+  
+  let msg = `${ourTime} [${level}] : ${message} ` 
   if(metadata) {
 	msg += JSON.stringify(metadata)
   }
@@ -20,7 +22,7 @@ const logger = createLogger({
 	myFormat
   ),
   transports: [
-	new transports.Console({ level: 'info' }),
+	new transports.Console({ level: 'debug' }),
 	new transports.File({ filename: "./logs/app.log", level: 'debug' }),
   ]
 });
