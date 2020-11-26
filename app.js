@@ -10,7 +10,7 @@ let http = require('http'),
     mongoose = require('mongoose');
     logger = require('./winston_config.js')
     morgan = require('morgan')
-var isDevelopment = process.env.NODE_ENV === 'development';
+var isProduction = process.env.NODE_ENV === 'production';
 
 // Create global app object
 var app = express();
@@ -27,11 +27,11 @@ app.use(express.static(__dirname + '/public'));
 
 app.use(session({ secret: 'conduit', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false  }));
 
-if (!isDevelopment) {
+if (!isProduction) {
   app.use(errorhandler());
 }
 
-if(isDevelopment){
+if(isProduction){
   mongoose.connect('mongodb://localhost/conduit');
 } else {
   mongoose.connect('mongodb://localhost/conduit');
@@ -56,7 +56,7 @@ app.use(function(req, res, next) {
 
 // development error handler
 // will print stacktrace
-if (!isDevelopment) {
+if (!isProduction) {
   app.use(function(err, req, res, next) {
     
     logger.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
