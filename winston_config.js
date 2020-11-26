@@ -18,7 +18,7 @@ const logger = createLogger({
   format: combine(
 	format.colorize(),
 	splat(),
-	timestamp(),
+	//timestamp(),
 	myFormat
   ),
   transports: [
