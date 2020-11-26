@@ -32,9 +32,9 @@ if (!isDevelopment) {
 }
 
 if(isDevelopment){
-  mongoose.connect(process.env.MONGODB_URI);
+  mongoose.connect('mongodb://localhost/conduit');
 } else {
-  mongoose.connect(process.env.MONGODB_URI);
+  mongoose.connect('mongodb://localhost/conduit');
   mongoose.set('debug', true);
 }
 
