@@ -8,9 +8,9 @@ let http = require('http'),
     passport = require('passport'),
     errorhandler = require('errorhandler'),
     mongoose = require('mongoose');
-    logger = require('./winston_config.js')
+    winston = require('./winston_config.js')
     morgan = require('morgan')
-var isDevelopment = process.env.NODE_ENV === 'development';
+var isProduction = process.env.NODE_ENV === 'production';
 
 // Create global app object
 var app = express();
@@ -18,7 +18,7 @@ var app = express();
 app.use(cors());
 
 // Normal express config defaults
-app.use(morgan('combined', {"stream": logger.stream.write}));
+app.use(morgan('combined', {"stream": winston.stream.write}));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -27,14 +27,14 @@ app.use(express.static(__dirname + '/public'));
 
 app.use(session({ secret: 'conduit', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false  }));
 
-if (!isDevelopment) {
+if (!isProduction) {
   app.use(errorhandler());
 }
 
-if(isDevelopment){
+if(isProduction){
   mongoose.connect(process.env.MONGODB_URI);
 } else {
-  mongoose.connect(process.env.MONGODB_URI);
+  mongoose.connect('mongodb://localhost/conduit');
   mongoose.set('debug', true);
 }
 
@@ -56,10 +56,10 @@ app.use(function(req, res, next) {
 
 // development error handler
 // will print stacktrace
-if (!isDevelopment) {
+if (!isProduction) {
   app.use(function(err, req, res, next) {
-    
-    logger.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+    console.log(err.stack);
+    winston.error(`Kyllä tämä on meidän logiviesti ${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
     res.status(err.status || 500);
 
     res.json({'errors': {
@@ -69,7 +69,7 @@ if (!isDevelopment) {
   });
 }
 
-// development error handler
+// production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
