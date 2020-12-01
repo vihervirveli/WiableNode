@@ -6,9 +6,10 @@ const { combine, splat, printf } = format;
 const myFormat = printf( ({ level, message, ...metadata}) => {
   let ourTime = new Date().toLocaleString('fi-FI',{timeZone: 'Europe/Helsinki'})
   
-  let msg = `${ourTime} [${level}] : ${message}  *** end of our code block P0033 ***` 
+  let msg = `${ourTime} [${level}] : ${message} ` 
   if(metadata) {
-	msg += JSON.stringify(metadata)
+  msg += JSON.stringify(metadata)
+  msg += `*** end of our code block P0033 ***`
   }
   return msg
 });
