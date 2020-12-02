@@ -58,7 +58,7 @@ router.post('/users/login', function(req, res, next){
       logger.info(`user logged in - ${user}`)
       return res.json({user: user.toAuthJSON()});
     } else {
-      logger.error(`user tried to log in but used faulty credentials ${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+      
       return res.status(422).json(info);
     }
   })(req, res, next);
