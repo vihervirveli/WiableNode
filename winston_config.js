@@ -9,9 +9,8 @@ const myFormat = printf( ({ level, message, ...metadata}) => {
   let msg = `${ourTime} [${level}] : ${message} ` 
   if(metadata) {
   msg += JSON.stringify(metadata)
-  msg += `*** end of our code block P0033 ***`
-  }
-  return msg
+  } 
+  return msg+` *** end of our code block P0033 ***`
 });
 
 const logger = createLogger({
