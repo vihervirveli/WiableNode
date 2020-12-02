@@ -2,7 +2,7 @@ var router = require('express').Router();
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var auth = require('../auth');
-
+var logger = require('./../../winston_config.js')
 // Preload user profile on routes with ':username'
 router.param('username', function(req, res, next, username){
   User.findOne({username: username}).then(function(user){
@@ -33,6 +33,7 @@ router.post('/:username/follow', auth.required, function(req, res, next){
     if (!user) { return res.sendStatus(401); }
 
     return user.follow(profileId).then(function(){
+      logger.info(`user followed another user (${req.profile.username.toString()}). ${user} `)
       return res.json({profile: req.profile.toProfileJSONFor(user)});
     });
   }).catch(next);
@@ -45,6 +46,7 @@ router.delete('/:username/follow', auth.required, function(req, res, next){
     if (!user) { return res.sendStatus(401); }
 
     return user.unfollow(profileId).then(function(){
+      logger.info(`user unfollowed another user (${req.profile.username.toString()}). ${user} `)
       return res.json({profile: req.profile.toProfileJSONFor(user)});
     });
   }).catch(next);
