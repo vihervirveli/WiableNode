@@ -54,7 +54,7 @@ app.use(function(req, res, next) {
 
 /// error handlers
 
-// development error handler
+// production  error handler
 // will print stacktrace
 if (!isProduction) {
   app.use(function(err, req, res, next) {
